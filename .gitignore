@@ -1,4 +1,7 @@
 .idea
 *.iml
-**/*creds*.yml
+**/creds.yml
+params.yml
 env.sh
+**/terraform.tfplan
+**/terraform.tfstate
