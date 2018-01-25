@@ -4,6 +4,7 @@
 params.yml
 env.sh
 .terraform
+.terraform*
 **/terraform.tfplan*
 **/terraform.tfstate*
 temp
