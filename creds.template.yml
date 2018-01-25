@@ -1,0 +1,17 @@
+azure_subscription_id:
+azure_tenant_id:
+
+# service principal id for NETWORK (generated - populate after running azure-prepare-env.sh)
+azure_network_service_principal_client_id:
+
+# generate a secure password/secret to use for the Network service principal
+# limitation: cannot have a $ in the string due to the way parse_yaml.sh works
+azure_network_service_principal_client_secret:
+
+
+# service principal id for PCF BOSH to use (generated)
+azure_pcf_service_principal_client_id:
+
+# generate a secure password/secret to use for the Network service principal
+# limitation: cannot have a $ in the string due to the way parse_yaml.sh works
+azure_pcf_service_principal_client_secret:

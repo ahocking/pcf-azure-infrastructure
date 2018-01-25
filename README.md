@@ -1,11 +1,12 @@
 # Provision PCF Infrastructure for a Multi-ResourceGroup Azure Deployment
-Based on our current reference architecture for PCF on Azure:
+Based on the current reference architecture for PCF on Azure:
 https://docs.pivotal.io/pivotalcf/1-12/refarch/azure/azure_ref_arch.html
 
 ### To use the local script version:
 #### Requirements:
 * Azure cli https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest
 * Terraform https://www.terraform.io/downloads.html
+* jq 1.5 https://stedolan.github.io/jq/download/
 
 #### Steps
 1. Log in to Azure
@@ -28,7 +29,9 @@ https://docs.pivotal.io/pivotalcf/1-12/refarch/azure/azure_ref_arch.html
 
 The `azure-prepare-env.sh` script will perform the actions required for a multi resource group
  deployment of PCF according to the documentation listed below:
+ 
 https://docs.pivotal.io/pivotalcf/1-12/customizing/azure-prepare-env.html
+
 https://docs.pivotal.io/pivotalcf/1-12/refarch/azure/azure_ref_arch.html#multi-resgroup-notes
 
 Before you run the `azure-prepare-env.sh` script, login to Azure using 2-factor auth:

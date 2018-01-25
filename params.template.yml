@@ -1,0 +1,6 @@
+azure_terraform_prefix:
+azure_region:
+azure_multi_resgroup_network:
+azure_multi_resgroup_pcf:
+azure_infra_terraform_storage_account:
+azure_infra_terraform_container_name:
