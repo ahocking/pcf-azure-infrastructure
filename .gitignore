@@ -3,6 +3,7 @@
 **/creds.yml
 params.yml
 env.sh
-**/terraform.tfplan
-**/terraform.tfstate
+.terraform
+**/terraform.tfplan*
+**/terraform.tfstate*
 temp

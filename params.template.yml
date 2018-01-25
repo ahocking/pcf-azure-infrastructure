@@ -1,6 +1,26 @@
 azure_terraform_prefix:
 azure_region:
+
 azure_multi_resgroup_network:
 azure_multi_resgroup_pcf:
+
 azure_infra_terraform_storage_account:
 azure_infra_terraform_container_name:
+
+azure_pcf_terraform_storage_account_name:
+azure_pcf_terraform_container_name:
+
+azure_terraform_vnet_name: pcf-vnet
+azure_terraform_vnet_cidr: "192.168.0.0/20"
+
+azure_terraform_subnet_infra_name: pcf-infra-subnet
+azure_terraform_subnet_infra_cidr: "192.168.0.0/26"
+
+azure_terraform_subnet_ert_name: pcf-ert-subnet
+azure_terraform_subnet_ert_cidr: "192.168.4.0/22"
+
+azure_terraform_subnet_services1_name: pcf-services1-subnet
+azure_terraform_subnet_services1_cidr: "192.168.8.0/22"
+
+azure_terraform_subnet_dynamic_services_name: pcf-dynamic-services-subnet
+azure_terraform_subnet_dynamic_services_cidr: "192.168.12.0/22"
