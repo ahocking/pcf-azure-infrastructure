@@ -11,10 +11,6 @@ function delete-infrastructure() {
   echo "Executing Terraform Destroy ...."
   echo "=============================================================================================="
 
-  echo "=============================================================================================="
-  echo "Executing Terraform Plan ..."
-  echo "=============================================================================================="
-
   terraform init ${TERRAFORM_SCRIPTS_DIR}
 
   terraform destroy -force \
@@ -37,6 +33,8 @@ function delete-infrastructure() {
     -var "azure_multi_resgroup_pcf=dontcare" \
     -var "azure_pcf_terraform_storage_account_name=dontcare" \
     -var "azure_pcf_terraform_container_name=dontcare" \
+    -var "pcf_ert_domain=dontcare" \
+    -var "priv_ip_mysql_lb=dontcare" \
     -state ${TERRAFORM_STATE_INPUT_DIR}/terraform.tfstate \
     -state-out ${TERRAFORM_STATE_OUTPUT_DIR}/terraform.tfstate \
     ${TERRAFORM_SCRIPTS_DIR}
