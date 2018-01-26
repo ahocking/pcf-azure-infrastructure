@@ -9,6 +9,8 @@ variable "client_secret" {}
 variable "tenant_id" {}
 variable "location" {}
 
+variable "env_name" {}
+
 variable "azure_multi_resgroup_network" {}
 variable "azure_multi_resgroup_pcf" {}
 

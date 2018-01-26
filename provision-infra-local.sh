@@ -35,6 +35,8 @@ export AZURE_TERRAFORM_SUBNET_DYNAMIC_SERVICES_CIDR=${azure_terraform_subnet_dyn
 export AZURE_PCF_TERRAFORM_STORAGE_ACCOUNT_NAME=${azure_pcf_terraform_storage_account_name}
 export AZURE_PCF_TERRAFORM_CONTAINER_NAME=${azure_pcf_terraform_container_name}
 
+export ENV_NAME=${azure_terraform_prefix}
+
 export PCF_ERT_DOMAIN=${pcf_ert_domain}
 export PRIV_IP_MYSQL_LB=${priv_ip_mysql_lb}
 

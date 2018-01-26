@@ -17,6 +17,7 @@ function run_terraform() {
       -var "client_secret=${AZURE_CLIENT_SECRET}" \
       -var "tenant_id=${AZURE_TENANT_ID}" \
       -var "location=${AZURE_REGION}" \
+      -var "env_name=${ENV_NAME}" \
       -var "azure_terraform_vnet_name=${AZURE_TERRAFORM_VNET_NAME}" \
       -var "azure_terraform_vnet_cidr=${AZURE_TERRAFORM_VNET_CIDR}" \
       -var "azure_terraform_subnet_infra_name=${AZURE_TERRAFORM_SUBNET_INFRA_NAME}" \
