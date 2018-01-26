@@ -31,6 +31,8 @@ function run_terraform() {
       -var "azure_multi_resgroup_pcf=${AZURE_MULTI_RESGROUP_PCF}" \
       -var "azure_pcf_terraform_storage_account_name=${AZURE_PCF_TERRAFORM_STORAGE_ACCOUNT_NAME}" \
       -var "azure_pcf_terraform_container_name=${AZURE_PCF_TERRAFORM_CONTAINER_NAME}" \
+      -var "pcf_ert_domain=${PCF_ERT_DOMAIN}" \
+      -var "priv_ip_mysql_lb=${PRIV_IP_MYSQL_LB}" \
       -out terraform.tfplan \
       -state ${TERRAFORM_STATE_INPUT_DIR}/terraform.tfstate \
       ${TERRAFORM_SCRIPTS_DIR}

@@ -30,3 +30,7 @@ variable "azure_terraform_subnet_dynamic_services_cidr" {}
 // these variables support the terraform container required by the create-infrastructure job in pcf-pipelines/install-pcf/azure/pipeline.yml
 variable "azure_pcf_terraform_storage_account_name" {}
 variable "azure_pcf_terraform_container_name" {}
+
+variable "pcf_ert_domain" {}
+
+variable "priv_ip_mysql_lb" {}

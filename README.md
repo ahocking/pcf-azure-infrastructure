@@ -1,4 +1,4 @@
-# Provision PCF Infrastructure for a Multi-ResourceGroup Azure Deployment
+# Provision Azure Infrastructure for a Multi-ResourceGroup PCF Deployment
 Based on the current reference architecture for PCF on Azure:
 https://docs.pivotal.io/pivotalcf/1-12/refarch/azure/azure_ref_arch.html
 
