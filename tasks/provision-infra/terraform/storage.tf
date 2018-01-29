@@ -12,7 +12,7 @@ resource "azurerm_storage_account" "pcf_terraform_storage_account" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_storage_container" "ops_manager_storage_container" {
+resource "azurerm_storage_container" "pcf_terraform_storage_container" {
   name                  = "${var.azure_pcf_terraform_container_name}"
   depends_on            = ["azurerm_storage_account.pcf_terraform_storage_account"]
   resource_group_name   = "${azurerm_resource_group.pcf_resource_group.name}"
