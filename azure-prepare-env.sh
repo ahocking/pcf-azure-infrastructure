@@ -14,6 +14,32 @@ IDENTIFIER_URI="http://NETWORKAzureCPI-${azure_terraform_prefix}"
 DISPLAY_NAME="${azure_terraform_prefix}-Service Principal for NETWORK"
 
 # ===============
+# Resource Groups
+
+NETWORK_RES_GROUP=$(
+    az group show --name "${azure_multi_resgroup_network}")
+
+if [[ -z "$NETWORK_RES_GROUP" ]]; then
+    echo "Creating resource group ${azure_multi_resgroup_network}"
+    NETWORK_RES_GROUP=$(
+        az group create --name "${azure_multi_resgroup_network}" --location "${azure_region}")
+else
+    echo "...Skipping resource group ${azure_multi_resgroup_network}.  Already exists."
+fi
+
+PCF_RES_GROUP=$(
+    az group show --name "${azure_multi_resgroup_pcf}")
+
+if [[ -z "$PCF_RES_GROUP" ]]; then
+    echo "Creating resource group ${azure_multi_resgroup_pcf}"
+    PCF_RES_GROUP=$(
+        az group create --name "${azure_multi_resgroup_pcf}" --location "${azure_region}")
+else
+    echo "...Skipping resource group ${azure_multi_resgroup_pcf}.  Already exists."
+fi
+
+
+# ===============
 # Create app and service principal for the Network resource group
 
 # check for existing app by identifier-uri
@@ -54,21 +80,42 @@ ROLE_ID=$(
     az role assignment list \
       --assignee ${SERVICE_PRINCIPAL_NAME} \
       --role "Contributor" \
-      --scope /subscriptions/${azure_subscription_id} \
+      --scope /subscriptions/${azure_subscription_id}/resourceGroups/${azure_multi_resgroup_network} \
       | jq -r ".[] | .id")
 
 if [[ -z "$ROLE_ID" ]]; then
 
-    echo "Applying Contributor access to ${DISPLAY_NAME}"
+    echo "Applying Contributor access to ${DISPLAY_NAME} for resource group ${azure_multi_resgroup_network}"
     ROLE_ID=$(
         az role assignment create \
           --assignee "${SERVICE_PRINCIPAL_NAME}" \
           --role "Contributor" \
-          --scope /subscriptions/${azure_subscription_id} \
+          --scope /subscriptions/${azure_subscription_id}/resourceGroups/${azure_multi_resgroup_network} \
            | jq -r ".id")
 else
-    echo "...Skipping Contributor roll assignment ${DISPLAY_NAME}.  Already assigned."
+    echo "...Skipping Contributor roll assignment ${DISPLAY_NAME} for resource group ${azure_multi_resgroup_network}.  Already assigned."
 fi
+
+ROLE_ID=$(
+    az role assignment list \
+      --assignee ${SERVICE_PRINCIPAL_NAME} \
+      --role "Contributor" \
+      --scope /subscriptions/${azure_subscription_id}/resourceGroups/${azure_multi_resgroup_pcf} \
+      | jq -r ".[] | .id")
+
+if [[ -z "$ROLE_ID" ]]; then
+
+    echo "Applying Contributor access to ${DISPLAY_NAME} for resource group ${azure_multi_resgroup_pcf}"
+    ROLE_ID=$(
+        az role assignment create \
+          --assignee "${SERVICE_PRINCIPAL_NAME}" \
+          --role "Contributor" \
+          --scope /subscriptions/${azure_subscription_id}/resourceGroups/${azure_multi_resgroup_pcf} \
+           | jq -r ".id")
+else
+    echo "...Skipping Contributor roll assignment ${DISPLAY_NAME} for resource group ${azure_multi_resgroup_pcf}.  Already assigned."
+fi
+
 
 # ===============
 # Create app and service principal for the BOSH/PCF resource group
@@ -109,6 +156,24 @@ if [[ -z "$SERVICE_PRINCIPAL_NAME" ]]; then
 else
     echo "...Skipping service principal ${BOSH_DISPLAY_NAME}.  Already exists."
 fi
+
+ROLE_ASSIGNMENT_CONTRIBUTOR=$(
+    az role assignment list \
+      --role "Contributor" \
+      --assignee ${AZURE_PCF_SERVICE_PRINCIPAL_CLIENT_ID} \
+      --scope "/subscriptions/${azure_subscription_id}/resourceGroups/${azure_multi_resgroup_pcf}" | jq -r ".[0]")
+
+if [[ -z "${ROLE_ASSIGNMENT_CONTRIBUTOR/null/}" ]]; then
+    echo "Assigning Contributor role for resource group ${azure_multi_resgroup_pcf} to BOSH/PCF service principal"
+    ROLE_ASSIGNMENT_CONTRIBUTOR=$(
+        az role assignment create \
+          --role "Contributor" \
+          --assignee ${AZURE_PCF_SERVICE_PRINCIPAL_CLIENT_ID} \
+          --scope "/subscriptions/${azure_subscription_id}/resourceGroups/${azure_multi_resgroup_pcf}")
+else
+    echo "...Skipping assignment of Contributor role for resource group ${azure_multi_resgroup_pcf}.  Already assigned."
+fi
+
 
 # create custom roles
 ROLE_NETWORK_READONLY_NAME="PCF Network Read Only (custom)"
@@ -153,7 +218,7 @@ ROLE_ASSIGNMENT_NETWORK=$(
     az role assignment list \
       --role "${ROLE_NETWORK_READONLY_NAME}" \
       --assignee ${AZURE_PCF_SERVICE_PRINCIPAL_CLIENT_ID} \
-      --scope "/subscriptions/${azure_subscription_id}" | jq -r ".[0]")
+      --scope "/subscriptions/${azure_subscription_id}/resourceGroups/${azure_multi_resgroup_network}" | jq -r ".[0]")
 
 if [[ -z "${ROLE_ASSIGNMENT_NETWORK/null/}" ]]; then
     echo "Assigning custom role ${ROLE_NETWORK_READONLY_NAME} to BOSH/PCF service principal"
@@ -161,7 +226,7 @@ if [[ -z "${ROLE_ASSIGNMENT_NETWORK/null/}" ]]; then
         az role assignment create \
           --role "${ROLE_NETWORK_READONLY_NAME}" \
           --assignee ${AZURE_PCF_SERVICE_PRINCIPAL_CLIENT_ID} \
-          --scope "/subscriptions/${azure_subscription_id}")
+          --scope "/subscriptions/${azure_subscription_id}/resourceGroups/${azure_multi_resgroup_network}")
 else
     echo "...Skipping assignment of custom role ${ROLE_NETWORK_READONLY_NAME}.  Already assigned."
 fi
@@ -201,7 +266,7 @@ ROLE_ASSIGNMENT_PCF_DEPLOY=$(
     az role assignment list \
       --role "${ROLE_PCF_DEPLOY_NAME}" \
       --assignee ${AZURE_PCF_SERVICE_PRINCIPAL_CLIENT_ID} \
-      --scope "/subscriptions/${azure_subscription_id}" | jq -r ".[0]")
+      --scope "/subscriptions/${azure_subscription_id}/resourceGroups/${azure_multi_resgroup_network}" | jq -r ".[0]")
 
 if [[ -z "${ROLE_ASSIGNMENT_PCF_DEPLOY/null/}" ]]; then
     echo "Assigning custom role ${ROLE_PCF_DEPLOY_NAME} to BOSH/PCF service principal"
@@ -209,53 +274,43 @@ if [[ -z "${ROLE_ASSIGNMENT_PCF_DEPLOY/null/}" ]]; then
         az role assignment create \
           --role "${ROLE_PCF_DEPLOY_NAME}" \
           --assignee ${AZURE_PCF_SERVICE_PRINCIPAL_CLIENT_ID} \
-          --scope "/subscriptions/${azure_subscription_id}")
+          --scope "/subscriptions/${azure_subscription_id}/resourceGroups/${azure_multi_resgroup_network}")
 else
     echo "...Skipping assignment of custom role ${ROLE_PCF_DEPLOY_NAME}.  Already assigned."
 fi
 
-# ===============
-# Create the initial network resource group so the terraform storage container can be created
 
-# create initial resource group to put terraform
-RES_GROUP=$(
-    az group show --name "${azure_multi_resgroup_network}")
-
-if [[ -z "$RES_GROUP" ]]; then
-    RES_GROUP=$(
-        az group create --name "${azure_multi_resgroup_network}" --location "${azure_region}")
-else
-    echo "...Skipping resource group ${azure_multi_resgroup_network}.  Already exists."
-fi
 
 # create storage account for infra terraform pipeline
 STORAGE_ACCOUNT=$(
-    az storage account show \
-      --name "${azure_infra_terraform_storage_account}" \
-      --resource-group "${azure_multi_resgroup_network}")
+    az storage account list \
+      --resource-group "${azure_multi_resgroup_pcf}" \
+      | jq -r ".[] | select(.name == \"${azure_pcf_terraform_storage_account_name}\")")
 
-if [[ -z "$STORAGE_ACCOUNT" ]]; then
+if [[ -z "${STORAGE_ACCOUNT/null/}" ]]; then
+    echo "Creating storage account ${azure_pcf_terraform_storage_account_name}"
     STORAGE_ACCOUNT=$(
         az storage account create \
-          --name "${azure_infra_terraform_storage_account}" \
-          --resource-group "${azure_multi_resgroup_network}" \
+          --name "${azure_pcf_terraform_storage_account_name}" \
+          --resource-group "${azure_multi_resgroup_pcf}" \
           --sku "Standard_LRS")
 else
-  echo "...Skipping storage account ${azure_infra_terraform_storage_account}.  Already exists."
+  echo "...Skipping storage account ${azure_pcf_terraform_storage_account_name}.  Already exists."
 fi
 
 STORAGE_CONTAINER=$(
     az storage container show \
-      --name "${azure_infra_terraform_container_name}" \
-      --account-name "${azure_infra_terraform_storage_account}")
+      --name "${azure_pcf_terraform_container_name}" \
+      --account-name "${azure_pcf_terraform_storage_account_name}")
 
-if [[ -z "$STORAGE_CONTAINER" ]]; then
+if [[ -z "${STORAGE_CONTAINER/null/}" ]]; then
+    echo "Creating storage container ${azure_pcf_terraform_container_name}"
     STORAGE_CONTAINER=$(
         az storage container create \
-          --name "${azure_infra_terraform_container_name}" \
-          --account-name="${azure_infra_terraform_storage_account}")
+          --name "${azure_pcf_terraform_container_name}" \
+          --account-name="${azure_pcf_terraform_storage_account_name}")
 else
-    echo "...Skipping storage container ${azure_infra_terraform_container_name}.  Already exists."
+    echo "...Skipping storage container ${azure_pcf_terraform_container_name}.  Already exists."
 fi
 
 echo
