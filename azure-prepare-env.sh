@@ -157,6 +157,8 @@ else
     echo "...Skipping service principal ${BOSH_DISPLAY_NAME}.  Already exists."
 fi
 
+#TODO service principal creation completes asynchronously.  Need to wait for completion before continuing.
+
 ROLE_ASSIGNMENT_CONTRIBUTOR=$(
     az role assignment list \
       --role "Contributor" \
@@ -314,9 +316,9 @@ else
 fi
 
 echo
-echo "Populate creds.yml with these values:"
+echo "Populate params.yml with these values:"
 echo
 echo "azure_network_service_principal_client_id: ${AZURE_NETWORK_SERVICE_PRINCIPAL_CLIENT_ID}"
-echo "azure_pcf_service_principal_client_id: ${AZURE_PCF_SERVICE_PRINCIPAL_CLIENT_ID}"
+echo "azure_multi_resgroup_network_client_id: ${AZURE_PCF_SERVICE_PRINCIPAL_CLIENT_ID}"
 
 
