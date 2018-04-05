@@ -316,9 +316,11 @@ else
 fi
 
 echo
-echo "Populate params.yml with these values:"
+echo "Populate pcf-pipelines/install-pcf/azuer/params.yml with these values:"
 echo
-echo "azure_network_service_principal_client_id: ${AZURE_NETWORK_SERVICE_PRINCIPAL_CLIENT_ID}"
-echo "azure_multi_resgroup_network_client_id: ${AZURE_PCF_SERVICE_PRINCIPAL_CLIENT_ID}"
+echo "azure_client_id: ${AZURE_PCF_SERVICE_PRINCIPAL_CLIENT_ID}"
+echo "azure_client_secret: <secret>"
+echo "azure_multi_resgroup_network_client_id: ${AZURE_NETWORK_SERVICE_PRINCIPAL_CLIENT_ID}"
+echo "azure_multi_resgroup_network_client_secret: <secret>"
 
 
